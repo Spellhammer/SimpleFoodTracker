@@ -6,8 +6,88 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SFT - The Simple Food Tracker</title>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        function sft() {
+            return {
+                entries: [
+                    {
+                        title: "Pudding",
+                        value: 120
+                    }
+                ],
+                total() {
+                    let total = 0;
+
+                    this.entries.forEach( (entry) => {
+                        total = parseInt(total) + ( parseInt(entry.value) ? parseInt(entry.value) : 0 );
+                    });
+
+                    return total;
+                },
+                removeEntry( index ) {
+                    let entriesCopy = JSON.parse( JSON.stringify(this.entries) );
+
+                    entriesCopy.splice(index, 1);
+
+                    return entriesCopy;
+                },
+                newEntry() {
+                    let entriesCopy = JSON.parse( JSON.stringify(this.entries) );
+
+                    entriesCopy = [...entriesCopy, { title: "New Entry", value: 0 }];
+
+                    return entriesCopy;
+                }
+            }
+        }
+    </script>
 </head>
 <body>
-    <h1>Hello.</h1>
+    <section class="sft-wrapper" x-data="sft()">
+        <div class="sft-wrapper-inner">
+            <h1>The Simple Food Tracker</h1>
+            <span>The easiest way to track your foods!</span>
+            <ul class="sft-food-list">
+                <template x-for="(entry, index) in entries">
+                    <li class="sft-entry"><input type="text" x-model="entry.title"></span><input type="text" x-model="entry.value"></span><button @click="entries = removeEntry(index)">Delete</button></li>
+                </template>
+            </ul>
+            <button @click="entries = newEntry()">New Entry</button>
+            <span x-text="'Total for today: ' + total()"></span>
+        </div>
+    </section>
+    <style>
+        .sft-wrapper-inner {
+            box-sizing: border-box;
+            margin-inline: auto;
+            width: 100%;
+            max-width: 992px;
+            border: 1px solid black;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sft-food-list {
+            width: 100%;
+            margin-block-start: 0;
+            padding-inline-start: 0;
+            margin: 32px 0;
+        }
+
+        .sft-entry {
+            display: flex;
+            border-bottom: 1px dotted black;
+        }
+
+        .sft-entry > input:first-child {
+            width: 70%;
+        }
+
+        .sft-entry > input:nth-child(2) {
+            margin-left: auto;
+        }
+    </style>
 </body>
 </html>
